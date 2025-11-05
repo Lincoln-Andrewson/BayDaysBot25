@@ -120,26 +120,29 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 double RobotContainer::randomStickDrift(int axis) {
     //Gradually shifts randomAdder value, and if it gets too close to 0, reset it to something random
-    if(drunkModeActive == true){
-        if(axis == 0)
-            if(frc::ApplyDeadband(randomAdderX, 0.02) >= 0){
-                randomAdderX = randomAdderX - 0.05;
-            } else if(frc::ApplyDeadband(randomAdderX, 0.02) <= 0){
-                randomAdderX = randomAdderX + 0.05;
-            } else {
-                randomAdderX = (rand() % 100-m_driverController.GetLeftX()*100)/100.0;
-            }
-            return randomAdderX;
-    } else if(axis == 1){
-            if(frc::ApplyDeadband(randomAdderY, 0.02) >= 0){
-                randomAdderY = randomAdderY - 0.05;
-            } else if(frc::ApplyDeadband(randomAdderY, 0.02) <= 0){
-                randomAdderY = randomAdderY + 0.05;
-            } else {
-                randomAdderY = (rand() % 100-m_driverController.GetLeftY()*100)/100.0;
-            }
-            return randomAdderY;
-    } else {
-        return 0.0;
+    if(modulusCounter % 200 == 0){
+        if(drunkModeActive == true){
+            if(axis == 0)
+                if(frc::ApplyDeadband(randomAdderX, 0.02) >= 0){
+                    randomAdderX = randomAdderX - 0.05;
+                } else if(frc::ApplyDeadband(randomAdderX, 0.02) <= 0){
+                    randomAdderX = randomAdderX + 0.05;
+                } else {
+                    randomAdderX = (rand() % 100-m_driverController.GetLeftX()*100)/100.0;
+                }
+                return randomAdderX;
+        } else if(axis == 1){
+                if(frc::ApplyDeadband(randomAdderY, 0.02) >= 0){
+                    randomAdderY = randomAdderY - 0.05;
+                } else if(frc::ApplyDeadband(randomAdderY, 0.02) <= 0){
+                    randomAdderY = randomAdderY + 0.05;
+                } else {
+                    randomAdderY = (rand() % 100-m_driverController.GetLeftY()*100)/100.0;
+                }
+                return randomAdderY;
+        } else {
+            return 0.0;
+        }
+        modulusCounter++;
     }
 }

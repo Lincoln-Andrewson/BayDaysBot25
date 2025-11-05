@@ -51,6 +51,7 @@ class RobotContainer {
   void ConfigureButtonBindings();
   double randomStickDrift(int axis);
 
+  int modulusCounter = 0;
   double randomAdderX;
   double randomAdderY;
   bool drunkModeActive = true;
