@@ -36,9 +36,9 @@ RobotContainer::RobotContainer() {
       [this] {
         m_drive.Drive(
             -units::meters_per_second_t{frc::ApplyDeadband(
-                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)},
+                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)+randomStickDrift(1)},
             -units::meters_per_second_t{frc::ApplyDeadband(
-                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)},
+                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)+randomStickDrift(0)},
             -units::radians_per_second_t{frc::ApplyDeadband(
                 m_driverController.GetRightX(), OIConstants::kDriveDeadband)},
             true);
