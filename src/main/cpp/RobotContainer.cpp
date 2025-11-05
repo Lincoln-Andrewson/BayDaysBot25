@@ -16,6 +16,8 @@
 #include <units/angle.h>
 #include <units/velocity.h>
 
+#include <algorithm>
+
 #include <utility>
 
 #include "Constants.h"
@@ -35,10 +37,11 @@ RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(frc2::RunCommand(
       [this] {
         m_drive.Drive(
-            -units::meters_per_second_t{frc::ApplyDeadband(
-                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)+randomStickDrift(1)},
-            -units::meters_per_second_t{frc::ApplyDeadband(
-                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)+randomStickDrift(0)},
+            -units::meters_per_second_t{std::clamp(frc::ApplyDeadband(
+                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)+randomStickDrift(1), 0.0, 1.0)},
+                //Applies deadband to controller to rmove stick drift, then adds a random double number 0-1 and clamp it so it doesn't go over 1
+            -units::meters_per_second_t{std::clamp(frc::ApplyDeadband(
+                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)+randomStickDrift(0), 0.0, 1.0)},
             -units::radians_per_second_t{frc::ApplyDeadband(
                 m_driverController.GetRightX(), OIConstants::kDriveDeadband)},
             true);
@@ -118,8 +121,10 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
       frc2::InstantCommand(
           [this]() { m_drive.Drive(0_mps, 0_mps, 0_rad_per_s, false); }, {}));
 }
+
 double RobotContainer::randomStickDrift(int axis) {
     //Gradually shifts randomAdder value, and if it gets too close to 0, reset it to something random
+    // The frequency may need to be changed to what is best
     if(modulusCounter % 200 == 0){
         if(drunkModeActive == true){
             if(axis == 0)
@@ -128,21 +133,27 @@ double RobotContainer::randomStickDrift(int axis) {
                 } else if(frc::ApplyDeadband(randomAdderX, 0.02) <= 0){
                     randomAdderX = randomAdderX + 0.05;
                 } else {
-                    randomAdderX = (rand() % 100-m_driverController.GetLeftX()*100)/100.0;
+                    randomAdderX = rand() / RAND_MAX;
                 }
                 return randomAdderX;
+
         } else if(axis == 1){
                 if(frc::ApplyDeadband(randomAdderY, 0.02) >= 0){
                     randomAdderY = randomAdderY - 0.05;
                 } else if(frc::ApplyDeadband(randomAdderY, 0.02) <= 0){
                     randomAdderY = randomAdderY + 0.05;
                 } else {
-                    randomAdderY = (rand() % 100-m_driverController.GetLeftY()*100)/100.0;
+                    randomAdderY = rand() / RAND_MAX;
                 }
                 return randomAdderY;
         } else {
             return 0.0;
         }
         modulusCounter++;
+    } else if (axis == 0){
+        return randomAdderX;
+    } else if (axis == 1){
+        return randomAdderY;
     }
+
 }
