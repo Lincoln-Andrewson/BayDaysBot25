@@ -49,4 +49,9 @@ class RobotContainer {
   frc::SendableChooser<frc2::Command*> m_chooser;
 
   void ConfigureButtonBindings();
+  double randomStickDrift(int axis);
+
+  double randomAdderX;
+  double randomAdderY;
+  bool drunkModeActive = true;
 };
