@@ -18,6 +18,7 @@
 #include "subsystems/DriveSubsystem.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Loader.h"
+#include "subsystems/StupidFunctions.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -33,17 +34,19 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
   void ShooterControl();
-
- private:
+  
   // The driver's controller
   frc::XboxController m_driverController{OIConstants::kDriverControllerPort};
 
+ private:
+  
   // The robot's subsystems and commands are defined here...
 
   // The robot's subsystems
   DriveSubsystem m_drive;
   Shooter m_shooter;
   Loader m_loader;
+  StupidFunctions m_stupidFunctions;
 
   // The chooser for the autonomous routines
   frc::SendableChooser<frc2::Command*> m_chooser;
@@ -54,5 +57,9 @@ class RobotContainer {
   int modulusCounter = 0;
   double randomAdderX;
   double randomAdderY;
-  bool drunkModeActive = true;
+  
+  int criticismDelay = 0;
+  int criticismRand = 0;
+
+  bool stupidModeActive = true;
 };

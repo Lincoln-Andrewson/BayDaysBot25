@@ -22,6 +22,9 @@
 
 #include "Constants.h"
 #include "subsystems/DriveSubsystem.h"
+#include "subsystems/StupidFunctions.h"
+
+
 
 using namespace DriveConstants;
 
@@ -30,6 +33,9 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureButtonBindings();
+  //DO THE FUNNY 
+  
+
 
   // Set up default drive command
   // The left stick controls translation of the robot.
@@ -38,10 +44,10 @@ RobotContainer::RobotContainer() {
       [this] {
         m_drive.Drive(
             -units::meters_per_second_t{std::clamp(frc::ApplyDeadband(
-                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)+randomStickDrift(1), 0.0, 1.0)},
-                //Applies deadband to controller to rmove stick drift, then adds a random double number 0-1 and clamp it so it doesn't go over 1
+                m_driverController.GetLeftY(), OIConstants::kDriveDeadband)+m_stupidFunctions.randomStickDrift(1), 0.0, 1.0)},
+                //Applies deadband to controller to remove stick drift, then adds a random double number 0-1 and clamp it so it doesn't go over 1
             -units::meters_per_second_t{std::clamp(frc::ApplyDeadband(
-                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)+randomStickDrift(0), 0.0, 1.0)},
+                m_driverController.GetLeftX(), OIConstants::kDriveDeadband)+m_stupidFunctions.randomStickDrift(0), 0.0, 1.0)},
             -units::radians_per_second_t{frc::ApplyDeadband(
                 m_driverController.GetRightX(), OIConstants::kDriveDeadband)},
             true);
@@ -120,40 +126,4 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
       std::move(swerveControllerCommand),
       frc2::InstantCommand(
           [this]() { m_drive.Drive(0_mps, 0_mps, 0_rad_per_s, false); }, {}));
-}
-
-double RobotContainer::randomStickDrift(int axis) {
-    //Gradually shifts randomAdder value, and if it gets too close to 0, reset it to something random
-    // The frequency may need to be changed to what is best
-    if(modulusCounter % 200 == 0){
-        if(drunkModeActive == true){
-            if(axis == 0)
-                if(frc::ApplyDeadband(randomAdderX, 0.02) >= 0){
-                    randomAdderX = randomAdderX - 0.05;
-                } else if(frc::ApplyDeadband(randomAdderX, 0.02) <= 0){
-                    randomAdderX = randomAdderX + 0.05;
-                } else {
-                    randomAdderX = rand() / RAND_MAX;
-                }
-                return randomAdderX;
-
-        } else if(axis == 1){
-                if(frc::ApplyDeadband(randomAdderY, 0.02) >= 0){
-                    randomAdderY = randomAdderY - 0.05;
-                } else if(frc::ApplyDeadband(randomAdderY, 0.02) <= 0){
-                    randomAdderY = randomAdderY + 0.05;
-                } else {
-                    randomAdderY = rand() / RAND_MAX;
-                }
-                return randomAdderY;
-        } else {
-            return 0.0;
-        }
-        modulusCounter++;
-    } else if (axis == 0){
-        return randomAdderX;
-    } else if (axis == 1){
-        return randomAdderY;
-    }
-
-}
+};

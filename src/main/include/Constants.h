@@ -110,3 +110,7 @@ namespace LoaderConstants {
     constexpr int kLoaderMotorCanID = 13;
     constexpr double kLoaderSpeed = 0.05;
 }
+
+namespace StupidFunctionsConstants {
+    constexpr int kMaxCritismSeconds = 10; //30 secs by dafault, can be changed
+}
