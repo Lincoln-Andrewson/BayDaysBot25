@@ -5,6 +5,7 @@
 #include <frc/XboxController.h>
 #include <frc/GenericHID.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+
 #include "Constants.h"
 
 class StupidFunctions : public frc2::SubsystemBase {
@@ -22,9 +23,9 @@ class StupidFunctions : public frc2::SubsystemBase {
         double randomAdderX;
         double randomAdderY;
         
-        int criticismCycles = StupidFunctionsConstants::kMaxCritismSeconds*50;
-        long criticismRand = 0;
-        int criticismCounter = -1;
+        int criticismCycles = StupidFunctionsConstants::kMaxCriticismSeconds*50; // Converts seconds to cycles (1 cycle - 20ms)
+        double criticismRand = 0;
+        int criticismCounter = 0;
         bool criticismStalled = false;
         
 

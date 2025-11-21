@@ -49,22 +49,22 @@ void constructiveCriticismKill(){
     frc::SmartDashboard::PutBoolean("HAHAHAHA DEAD", "yup");
 }
 void StupidFunctions::constructiveCriticism(frc::XboxController& driverController){  
-    criticismRand = ((double)rand() / RAND_MAX)*criticismCycles;
     if(stupidModeActive == true){
+        srand(time(NULL)); // Randomizes the random
         if(!criticismStalled){
             if(criticismCounter >= criticismCycles){  // If critismCounter is over the max time, reset it
                 criticismCounter = 0;
             } 
-            if(criticismCounter == 0){
-                criticismRand = ((double)rand() / RAND_MAX)*criticismCycles;
+            if(criticismCounter == 0){ // Set the random on the first pass
+                criticismRand = ((double)rand() / RAND_MAX)*criticismCycles; 
             }
 
-            if(criticismCounter >= criticismRand){ //
+            if(frc::ApplyDeadband(criticismRand-criticismCounter, StupidFunctionsConstants::kRumbleLength) == 0){ // If the counter is in between a range (rumble length) of the random point, rumble controller 
                 driverController.SetRumble(driverController.kBothRumble, 1);
                 frc::SmartDashboard::PutNumber("Rumble", 1);
-                criticismStalled = true;
+                //criticismStalled = true;
 
-            } else if(criticismCounter < criticismRand){
+            } else{  // Otherwise stop rumbling controller
                 driverController.SetRumble(driverController.kBothRumble, 0);
                 frc::SmartDashboard::PutNumber("Rumble", 0);
             }
@@ -74,7 +74,7 @@ void StupidFunctions::constructiveCriticism(frc::XboxController& driverControlle
             frc::SmartDashboard::PutBoolean("Stalled", criticismStalled);
             criticismCounter++;
 
-        } else{
+        } else{ // I don't even know
             driverController.SetRumble(driverController.kBothRumble, 0);
             frc::SmartDashboard::PutString("Did you screw up?!?!?", "Fibler Text");
             frc::SmartDashboard::PutData("Yes :(", new frc2::RunCommand([this] {constructiveCriticismKill();}));
